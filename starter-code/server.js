@@ -38,6 +38,9 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   // TODO: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
+  //  do we need to add "authorURL, body, category, publishedOn, title" after author_id in the line below?
+  client.query(`INSERT INTO articles(author_id)
+    ON CONFLICT DO NOTHING;`),
   // TODO: Add author and "authorUrl" as data for the SQL query to interpolate.
   //       Remember that client.query accepts two arguments: your SQL string and
   //       an array of values that it will replace in a 1-to-1 relationship
