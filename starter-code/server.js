@@ -24,6 +24,7 @@ app.get('/new', function(request, response) {
 app.get('/articles', function(request, response) {
   // REVIEW: This query will join the data together from our tables and send it back to the client.
   // TODO: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
+//I think this is it
   client.query(`SELECT * FROM articles
     INNER JOIN authors
     ON articles.author_id = author_id`)
