@@ -63,10 +63,10 @@ app.post('/articles', function(request, response) {
       WHERE author=$5;
       `,
       [request.body.title,
-       request.body.category,
-       request.body.publishedOn,
-       request.body.body,
-       request.body.author]
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.body.author]
     )
   })
   .then(function() {
