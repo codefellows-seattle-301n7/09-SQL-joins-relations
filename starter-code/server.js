@@ -6,7 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = '';// TODO: Don't forget to set your own conString
+const conString = 'postgres://maks@localhost:5432/lab08';// TODO: Don't forget to set your own conString
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', function(error) {
@@ -24,7 +24,10 @@ app.get('/new', function(request, response) {
 app.get('/articles', function(request, response) {
   // REVIEW: This query will join the data together from our tables and send it back to the client.
   // TODO: Write a SQL query which joins all data from articles and authors tables on the author_id value of each
-  client.query(``)
+//I think this is it
+  client.query(`SELECT * FROM articles
+    INNER JOIN authors
+    ON articles.author_id = author_id`)
   .then(function(result) {
     response.send(result.rows);
   })
@@ -35,13 +38,15 @@ app.get('/articles', function(request, response) {
 
 app.post('/articles', function(request, response) {
   // TODO: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
+  //  do we need to add "authorURL, body, category, 'publishedOn', title" after author_id in the line below?
+  client.query(`INSERT INTO articles(author, 'authorURL')
+    ON VALUES($1, $2)
+    CONFLICT DO NOTHING;`,
+    [request.body.author, request.body.authorUrl]
   // TODO: Add author and "authorUrl" as data for the SQL query to interpolate.
   //       Remember that client.query accepts two arguments: your SQL string and
   //       an array of values that it will replace in a 1-to-1 relationship
   //       with our placeholder values, signified with the syntax $1, $2, etc.
-  client.query(
-    '',
-    []
   )
   .then(function() {
     // TODO: Write a SQL query to insert a new article, using a sub-query to
@@ -49,8 +54,10 @@ app.post('/articles', function(request, response) {
     // the functionality of a SELECT with VALUES when inserting new rows?
     // TODO: Add the required values from the request as data for the SQL query to interpolate
     client.query(
-      ``,
-      []
+      `INSERT INTO articles(author_id, body, category, 'publishedOn', title)
+      SELECT author_id, $1, $2, $3, $4
+      WHERE author = $5;`,
+      [request.body.author_id, request.body.body, request.body.category, request.body.poblishedOn, request.body.title]
     )
   })
   .then(function() {
